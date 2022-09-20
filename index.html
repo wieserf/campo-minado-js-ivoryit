@@ -1,20 +1,160 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title></title>
-        <script src="js/campo-minado.js"></script>
-    </head>
-    <body>
-        <div id="exibir-execucao"></div>
 
-        <script>
-            var campoMinado = new CampoMinado();
-            
-            
-            document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
-            document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
-            
-            // Realize sua codificação a partir deste ponto, boa sorte!
-        </script>
-    </body>
+<head>
+    <title></title>
+    <script src="js/campo-minado.js"></script>
+</head>
+
+<body>
+    <div id="exibir-execucao"></div>
+
+    <script>
+        var campoMinado = new CampoMinado();
+
+
+        document.getElementById('exibir-execucao').innerHTML += '----------- Início do jogo -----------';
+        document.getElementById('exibir-execucao').innerHTML += '<pre>' + campoMinado.Tabuleiro() + '</pre>';
+
+        // Realize sua codificação a partir deste ponto, boa sorte!
+
+        //Status do jogo
+
+        const status = () => {
+            var status = campoMinado.JogoStatus();
+            if (status === 0) {
+                return "Em execução!";
+            }
+            if (status === 1) {
+                return "Vitoria!";
+            }
+            if (status === 2) {
+                return "Derrota";
+            }
+        };
+
+        //função de array
+
+        function solver() {
+            var tabuleiro = campoMinado.Tabuleiro().split("\r\n");
+
+            var superior = null;
+            var diagonalSupDir = null;
+            var diagonalSupEsq = null;
+
+            var esquerda = null;
+            var direita = null;
+
+            var inferior = null;
+            var diagonalInfDir = null;
+            var diagonalInfEsq = null;
+
+            for (var i = 0; i < 9; i++) {
+                for (var j = 0; j < 9; j++) {
+                    var linha = i + 1;
+                    var coluna = j + 1;
+
+                    tabuleiro = campoMinado.Tabuleiro().split("\r\n");
+                    if (tabuleiro[i][j] === "-") {
+                        console.log(`linha ${linha} coluna ${coluna}`);
+
+                        if (i === 0) {
+                            diagonalSupEsq = null;
+                            superior = null;
+                            diagonalInfDir = null;
+                        }
+
+                        if (i === 8) {
+                            diagonalInfEsq = null;
+                            inferior = null;
+                            diagonalSupDir = null;
+                        }
+
+                        if (j === 0) {
+                            diagonalSupEsq = null;
+                            esquerda = null;
+                            diagonalInfEsq = null;
+                        }
+
+                        if (j === 8) {
+                            diagonalSupDir = null;
+                            direita = null;
+                            diagonalInfDir = null;
+                        }
+
+
+                        if (i !== 0) {
+                            superior = tabuleiro[i - 1][j];
+                        }
+
+                        if (i !== 8) {
+                            inferior = tabuleiro[i + 1][j];
+                        }
+
+                        if (j !== 0) {
+                            esquerda = tabuleiro[i][j - 1];
+                        }
+
+                        if (j !== 8) {
+                            direita = tabuleiro[i][j + 1];
+                        }
+
+
+                        if (i !== 0 && j !== 0) {
+                            diagonalSupEsq = tabuleiro[i - 1][j - 1];
+                        }
+
+                        if (i !== 0 && j !== 8) {
+                            diagonalSupDir = tabuleiro[i - 1][j + 1];
+                        }
+
+                        if (i !== 8 && j !== 0) {
+                            diagonalInfEsq = tabuleiro[i + 1][j - 1];
+                        }
+
+                        if (i !== 8 && j !== 8) {
+                            diagonalInfDir = tabuleiro[i + 1][j + 1];
+                        }
+
+                        if (esquerda === "0") {
+                            campoMinado.Abrir(linha, coluna);
+                        }
+
+                        if (
+                            !(
+                                esquerda === "1" ||
+                                esquerda === "2" ||
+                                esquerda === "3" ||
+                                esquerda === "4" ||
+                                esquerda === "-"
+                            )
+                        ) {
+                            campoMinado.Abrir(linha, coluna);
+                            document.getElementById(
+                                "exibir-execucao"
+                            ).innerHTML += `----------- ${status()} ----------- `;
+                            document.getElementById("exibir-execucao").innerHTML +=
+                                "<pre>" + campoMinado.Tabuleiro() + "</pre>";
+                        }
+                        console.log(
+                            `${diagonalSupEsq} ${superior} ${diagonalSupDir}\n${esquerda} ${tabuleiro[i][j]} ${direita}\n${diagonalInfEsq} ${inferior} ${diagonalInfDir}`
+                        );
+                    }
+                }
+            }
+
+            document.getElementById(
+                "exibir-execucao"
+            ).innerHTML += `----------- ${status()} ----------- `;
+            document.getElementById("exibir-execucao").innerHTML +=
+                "<pre>" + campoMinado.Tabuleiro() + "</pre>";
+            return tabuleiro;
+        }
+
+        solver();
+
+
+    </script>
+</body>
+
 </html>
